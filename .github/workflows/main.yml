@@ -27,10 +27,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: 'Find version of Terraform to use'
+      id: tfversion
+      run: echo ::set-output name=version::$(grep required_version provider.tf | sort -u | tail -1 | cut -d= -f2- | xargs)
+
     - name: 'Terraform Format'
       uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 0.15.4
+        terraform_version: ${{ steps.tfversion.outputs.version }}
         # tf_actions_subcommand: 'fmt'
         # tf_actions_working_dir: "./terraform"
 
